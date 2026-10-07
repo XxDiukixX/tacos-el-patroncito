@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tacos El Patroncito</title>
+    <title>Tacos El Patroncito de Alejandro</title>
     <style>
         * {
             margin: 0;
@@ -528,7 +528,7 @@
         <div id="menuPrincipal" class="ventana active">
             <div class="menu-principal">
                 <div class="logo"></div>
-                <h1 class="titulo-principal">🌮 Tacos El Patroncito 🌮</h1>
+                <h1 class="titulo-principal">🌮 Tacos El Patroncito de Alejandro 🌮</h1>
                 <p class="subtitulo">Los mejores tacos de la ciudad</p>
                 
                 <div class="botones-menu">
@@ -698,7 +698,6 @@
     </div>
 
     <script>
-        // Contraseñas NUEVAS
         const PASSWORDS = {
             vendedor: '234',
             comprador: '698',
@@ -708,7 +707,6 @@
         let rolActual = '';
         let montoTotal = 0;
 
-        // Abrir login
         function abrirLogin(rol) {
             rolActual = rol;
             document.getElementById('modalLogin').classList.add('active');
@@ -718,7 +716,6 @@
             document.getElementById('inputPassword').focus();
         }
 
-        // Verificar contraseña
         function verificarPassword() {
             const password = document.getElementById('inputPassword').value;
             
@@ -731,28 +728,23 @@
             }
         }
 
-        // Mostrar alerta en modal
         function mostrarAlertaModal(mensaje, tipo) {
             const alertaDiv = document.getElementById('alertaModal');
             const clase = tipo === 'error' ? 'alerta-error' : 'alerta-success';
             alertaDiv.innerHTML = `<div class="alerta ${clase}">${mensaje}</div>`;
         }
 
-        // Cerrar modal
         function cerrarModal() {
             document.getElementById('modalLogin').classList.remove('active');
         }
 
-        // Mostrar ventana según rol
         function mostrarVentana(rol) {
-            // Ocultar todas
             document.querySelectorAll('.ventana').forEach(v => v.classList.remove('active'));
             
-            // Mostrar la ventana del rol
             if (rol === 'vendedor') {
                 document.getElementById('ventanaVendedor').classList.add('active');
             } else if (rol === 'comprador') {
-                montoTotal = 0; // Reiniciar monto
+                montoTotal = 0;
                 document.getElementById('monto').value = '0.00';
                 document.getElementById('ventanaComprador').classList.add('active');
             } else if (rol === 'gerente') {
@@ -761,20 +753,17 @@
             }
         }
 
-        // Regresar al menú principal
         function regresarMenu() {
             document.querySelectorAll('.ventana').forEach(v => v.classList.remove('active'));
             document.getElementById('menuPrincipal').classList.add('active');
         }
 
-        // Agregar pedido
         function agregarPedido(nombre, precio) {
             montoTotal += precio;
             document.getElementById('monto').value = montoTotal.toFixed(2);
             mostrarNotificacion(`✅ ${nombre} agregado - $${precio}`);
         }
 
-        // Procesar pago
         function procesarPago() {
             const nombre = document.getElementById('nombreCliente').value;
             const tarjeta = document.getElementById('numeroTarjeta').value;
@@ -797,10 +786,8 @@
                 return;
             }
 
-            // Pago exitoso
             mostrarNotificacion(`✅ ¡Pago realizado!\n\nCliente: ${nombre}\nMonto: $${monto}\nTarjeta: **** **** **** ${tarjeta.slice(-4)}`);
             
-            // Limpiar campos
             setTimeout(() => {
                 document.getElementById('nombreCliente').value = '';
                 document.getElementById('numeroTarjeta').value = '';
@@ -812,7 +799,6 @@
             }, 2000);
         }
 
-        // Crear gráfica de ventas
         function crearGrafica() {
             const ventas = [50, 70, 90, 140, 110, 170, 200];
             const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul'];
@@ -833,7 +819,6 @@
             document.getElementById('graficaVentas').innerHTML = html;
         }
 
-        // Mostrar notificación
         function mostrarNotificacion(mensaje, tipo = 'success') {
             const alerta = document.createElement('div');
             alerta.className = `alerta alerta-${tipo}`;
@@ -850,7 +835,6 @@
             setTimeout(() => alerta.remove(), 3000);
         }
 
-        // Permitir Enter en el modal
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('inputPassword').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
@@ -859,7 +843,6 @@
             });
         });
 
-        // Formatear tarjeta mientras se escribe
         document.getElementById('numeroTarjeta').addEventListener('input', (e) => {
             let valor = e.target.value.replace(/\s/g, '');
             let formateado = '';
@@ -870,7 +853,6 @@
             e.target.value = formateado;
         });
 
-        // Formatear fecha MM/AA
         document.getElementById('fechaExpiracion').addEventListener('input', (e) => {
             let valor = e.target.value.replace(/\D/g, '');
             if (valor.length >= 2) {
