@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tacos El Patroncito</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5a623 0%, #e67e22 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        /* MENÚ PRINCIPAL */
+        .menu-principal {
+            padding: 60px 40px;
+            text-align: center;
+            background: linear-gradient(135deg, #fff8e7 0%, #ffe4b5 100%);
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="95" fill="%23e67e22"/><path d="M100 40 L140 80 L100 120 L60 80 Z" fill="%23fff8e7"/><circle cx="85" cy="90" r="8" fill="%23d35400"/><circle cx="115" cy="90" r="8" fill="%23d35400"/><path d="M90 110 Q100 115 110 110" fill="none" stroke="%23d35400" stroke-width="3"/></svg>') center/contain no-repeat;
+        }
+
+        .titulo-principal {
+            font-size: 48px;
+            font-weight: bold;
+            color: #8b3415;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitulo {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 50px;
+        }
+
+        .botones-menu {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 800px;
+        }
+
+        .btn-rol {
+            padding: 30px;
+            border: none;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-vendedor {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
+        .btn-comprador {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+
+        .btn-gerente {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+        }
+
+        .btn-rol:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-rol-icon {
+            font-size: 40px;
+        }
+
+        /* VENTANAS DE USUARIO */
+        .ventana {
+            display: none;
+            min-height: 600px;
+            padding: 40px;
+        }
+
+        .ventana.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ventana-titulo {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #333;
+        }
+
+        .btn-regresar {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #e67e22;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-regresar:hover {
+            background: #d35400;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* VENTANA COMPRADOR */
+        .comprador-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .menu-tacos {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .menu-tacos h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 22px;
+        }
+
+        .taco-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #e67e22;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .taco-item:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: #ffe8cc;
+        }
+
+        .taco-nombre {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .taco-precio {
+            color: #e67e22;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .pago-tarjeta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        .pago-tarjeta h3 {
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .btn-pagar {
+            width: 100%;
+            padding: 14px;
+            background: #f39c12;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-pagar:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* VENTANA VENDEDOR */
+        .vendedor-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-label {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        /* VENTANA GERENTE */
+        .gerente-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .gerente-info {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        .info-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #666;
+        }
+
+        .info-valor {
+            color: #e67e22;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .grafica-container {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        .grafica-titulo {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .barras-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 250px;
+            gap: 10px;
+        }
+
+        .barra {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .barra-valor {
+            font-size: 12px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .barra-columna {
+            width: 40px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            border-radius: 5px 5px 0 0;
+            min-height: 10px;
+        }
+
+        .barra-mes {
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+        }
+
+        /* MODAL LOGIN */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-titulo {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: #e67e22;
+            box-shadow: 0 0 5px rgba(230, 126, 34, 0.3);
+        }
+
+        .modal-botones {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-modal {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-entrar {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .btn-entrar:hover {
+            background: #27ae60;
+        }
+
+        .btn-cancelar {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-cancelar:hover {
+            background: #c0392b;
+        }
+
+        /* ALERTAS */
+        .alerta {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alerta-error {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .alerta-success {
+            background: #2ecc71;
+            color: white;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .botones-menu {
+                grid-template-columns: 1fr;
+            }
+
+            .comprador-container {
+                grid-template-columns: 1fr;
+            }
+
+            .gerente-container {
+                grid-template-columns: 1fr;
+            }
+
+            .vendedor-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .titulo-principal {
+                font-size: 36px;
+            }
+
+            .ventana {
+                padding: 20px;
+            }
+
+            .menu-principal {
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- MENÚ PRINCIPAL -->
+        <div id="menuPrincipal" class="ventana active">
+            <div class="menu-principal">
+                <div class="logo"></div>
+                <h1 class="titulo-principal">🌮 Tacos El Patroncito 🌮</h1>
+                <p class="subtitulo">Los mejores tacos de la ciudad</p>
+                
+                <div class="botones-menu">
+                    <button class="btn-rol btn-vendedor" onclick="abrirLogin('vendedor')">
+                        <span class="btn-rol-icon">👨‍💼</span>
+                        Vendedor
+                    </button>
+                    <button class="btn-rol btn-comprador" onclick="abrirLogin('comprador')">
+                        <span class="btn-rol-icon">🛒</span>
+                        Comprador
+                    </button>
+                    <button class="btn-rol btn-gerente" onclick="abrirLogin('gerente')">
+                        <span class="btn-rol-icon">📊</span>
+                        Gerente
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VENTANA COMPRADOR -->
+        <div id="ventanaComprador" class="ventana">
+            <h2 class="ventana-titulo">🛒 Comprador</h2>
+            
+            <div class="comprador-container">
+                <div class="menu-tacos">
+                    <h3>Menú de Tacos</h3>
+                    <div class="taco-item" onclick="agregarPedido('Taco al pastor', 25)">
+                        <span class="taco-nombre">🌮 Taco al pastor</span>
+                        <span class="taco-precio">$25</span>
+                    </div>
+                    <div class="taco-item" onclick="agregarPedido('Taco de bistec', 30)">
+                        <span class="taco-nombre">🥩 Taco de bistec</span>
+                        <span class="taco-precio">$30</span>
+                    </div>
+                    <div class="taco-item" onclick="agregarPedido('Taco de pollo', 22)">
+                        <span class="taco-nombre">🍗 Taco de pollo</span>
+                        <span class="taco-precio">$22</span>
+                    </div>
+                    <div class="taco-item" onclick="agregarPedido('Taco de chorizo', 28)">
+                        <span class="taco-nombre">🌭 Taco de chorizo</span>
+                        <span class="taco-precio">$28</span>
+                    </div>
+                    <div class="taco-item" onclick="agregarPedido('Taco de lengua', 35)">
+                        <span class="taco-nombre">👅 Taco de lengua</span>
+                        <span class="taco-precio">$35</span>
+                    </div>
+                    <div class="taco-item" onclick="agregarPedido('Taco de suadero', 32)">
+                        <span class="taco-nombre">🍖 Taco de suadero</span>
+                        <span class="taco-precio">$32</span>
+                    </div>
+                </div>
+
+                <div class="pago-tarjeta">
+                    <h3>💳 Pago con Tarjeta</h3>
+                    
+                    <div class="form-group">
+                        <label>Nombre del cliente</label>
+                        <input type="text" id="nombreCliente" placeholder="Juan Pérez" class="modal-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Número de tarjeta</label>
+                        <input type="text" id="numeroTarjeta" placeholder="1234 5678 9012 3456" maxlength="19" class="modal-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fecha expiración (MM/AA)</label>
+                        <input type="text" id="fechaExpiracion" placeholder="12/25" maxlength="5" class="modal-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label>CVV</label>
+                        <input type="text" id="cvv" placeholder="123" maxlength="4" class="modal-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Monto a pagar</label>
+                        <input type="number" id="monto" placeholder="0.00" class="modal-input" readonly>
+                    </div>
+
+                    <button class="btn-pagar" onclick="procesarPago()">Pagar Ahora</button>
+
+                    <button class="btn-regresar" onclick="regresarMenu()">← Regresar al menú principal</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VENTANA VENDEDOR -->
+        <div id="ventanaVendedor" class="ventana">
+            <h2 class="ventana-titulo">👨‍💼 Vendedor</h2>
+            
+            <div class="vendedor-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Total de ventas</div>
+                    <div class="stat-value">245</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <div class="stat-label">Cliente frecuente</div>
+                    <div class="stat-value" style="font-size: 24px;">Luis Ramírez</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <div class="stat-label">Días trabajados</div>
+                    <div class="stat-value">120 días</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                    <div class="stat-label">Sueldo estimado</div>
+                    <div class="stat-value">$5,200</div>
+                </div>
+            </div>
+
+            <button class="btn-regresar" onclick="regresarMenu()">← Regresar al menú principal</button>
+        </div>
+
+        <!-- VENTANA GERENTE -->
+        <div id="ventanaGerente" class="ventana">
+            <h2 class="ventana-titulo">📊 Gerente</h2>
+            
+            <div class="gerente-container">
+                <div class="gerente-info">
+                    <h3 style="margin-bottom: 20px; color: #333;">Información General</h3>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Nombre del trabajador:</span>
+                        <span class="info-valor">Juan López</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Dinero gastado (2 meses):</span>
+                        <span class="info-valor">$18,400</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Dinero juntado:</span>
+                        <span class="info-valor">$27,000</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Ganancias netas:</span>
+                        <span class="info-valor">$8,600</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Ventas del mes:</span>
+                        <span class="info-valor">⭐⭐⭐⭐⭐</span>
+                    </div>
+                </div>
+
+                <div class="grafica-container">
+                    <div class="grafica-titulo">Gráfica de Ventas (Últimos 7 meses)</div>
+                    <div class="barras-chart" id="graficaVentas">
+                        <!-- Se llena con JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-regresar" onclick="regresarMenu()">← Regresar al menú principal</button>
+        </div>
+    </div>
+
+    <!-- MODAL LOGIN -->
+    <div id="modalLogin" class="modal">
+        <div class="modal-content">
+            <div class="modal-titulo" id="modalTitulo">Ingrese contraseña</div>
+            <div id="alertaModal"></div>
+            <input type="password" id="inputPassword" class="modal-input" placeholder="Contraseña">
+            <div class="modal-botones">
+                <button class="btn-modal btn-entrar" onclick="verificarPassword()">Entrar</button>
+                <button class="btn-modal btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Contraseñas NUEVAS
+        const PASSWORDS = {
+            vendedor: '234',
+            comprador: '698',
+            gerente: '1987'
+        };
+
+        let rolActual = '';
+        let montoTotal = 0;
+
+        // Abrir login
+        function abrirLogin(rol) {
+            rolActual = rol;
+            document.getElementById('modalLogin').classList.add('active');
+            document.getElementById('modalTitulo').textContent = `Ingrese contraseña para ${rol}`;
+            document.getElementById('inputPassword').value = '';
+            document.getElementById('alertaModal').innerHTML = '';
+            document.getElementById('inputPassword').focus();
+        }
+
+        // Verificar contraseña
+        function verificarPassword() {
+            const password = document.getElementById('inputPassword').value;
+            
+            if (password === PASSWORDS[rolActual]) {
+                cerrarModal();
+                mostrarVentana(rolActual);
+            } else {
+                mostrarAlertaModal('Contraseña incorrecta', 'error');
+                document.getElementById('inputPassword').value = '';
+            }
+        }
+
+        // Mostrar alerta en modal
+        function mostrarAlertaModal(mensaje, tipo) {
+            const alertaDiv = document.getElementById('alertaModal');
+            const clase = tipo === 'error' ? 'alerta-error' : 'alerta-success';
+            alertaDiv.innerHTML = `<div class="alerta ${clase}">${mensaje}</div>`;
+        }
+
+        // Cerrar modal
+        function cerrarModal() {
+            document.getElementById('modalLogin').classList.remove('active');
+        }
+
+        // Mostrar ventana según rol
+        function mostrarVentana(rol) {
+            // Ocultar todas
+            document.querySelectorAll('.ventana').forEach(v => v.classList.remove('active'));
+            
+            // Mostrar la ventana del rol
+            if (rol === 'vendedor') {
+                document.getElementById('ventanaVendedor').classList.add('active');
+            } else if (rol === 'comprador') {
+                montoTotal = 0; // Reiniciar monto
+                document.getElementById('monto').value = '0.00';
+                document.getElementById('ventanaComprador').classList.add('active');
+            } else if (rol === 'gerente') {
+                crearGrafica();
+                document.getElementById('ventanaGerente').classList.add('active');
+            }
+        }
+
+        // Regresar al menú principal
+        function regresarMenu() {
+            document.querySelectorAll('.ventana').forEach(v => v.classList.remove('active'));
+            document.getElementById('menuPrincipal').classList.add('active');
+        }
+
+        // Agregar pedido
+        function agregarPedido(nombre, precio) {
+            montoTotal += precio;
+            document.getElementById('monto').value = montoTotal.toFixed(2);
+            mostrarNotificacion(`✅ ${nombre} agregado - $${precio}`);
+        }
+
+        // Procesar pago
+        function procesarPago() {
+            const nombre = document.getElementById('nombreCliente').value;
+            const tarjeta = document.getElementById('numeroTarjeta').value;
+            const fecha = document.getElementById('fechaExpiracion').value;
+            const cvv = document.getElementById('cvv').value;
+            const monto = document.getElementById('monto').value;
+
+            if (!nombre || !tarjeta || !fecha || !cvv || monto === '0.00') {
+                mostrarNotificacion('❌ Por favor completa todos los datos', 'error');
+                return;
+            }
+
+            if (tarjeta.length < 15) {
+                mostrarNotificacion('❌ Número de tarjeta inválido', 'error');
+                return;
+            }
+
+            if (!fecha.includes('/')) {
+                mostrarNotificacion('❌ Fecha debe ser MM/AA', 'error');
+                return;
+            }
+
+            // Pago exitoso
+            mostrarNotificacion(`✅ ¡Pago realizado!\n\nCliente: ${nombre}\nMonto: $${monto}\nTarjeta: **** **** **** ${tarjeta.slice(-4)}`);
+            
+            // Limpiar campos
+            setTimeout(() => {
+                document.getElementById('nombreCliente').value = '';
+                document.getElementById('numeroTarjeta').value = '';
+                document.getElementById('fechaExpiracion').value = '';
+                document.getElementById('cvv').value = '';
+                document.getElementById('monto').value = '0.00';
+                montoTotal = 0;
+                regresarMenu();
+            }, 2000);
+        }
+
+        // Crear gráfica de ventas
+        function crearGrafica() {
+            const ventas = [50, 70, 90, 140, 110, 170, 200];
+            const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul'];
+            const maxVenta = Math.max(...ventas);
+
+            let html = '';
+            ventas.forEach((venta, index) => {
+                const altura = (venta / maxVenta) * 200;
+                html += `
+                    <div class="barra">
+                        <div class="barra-valor">${venta}</div>
+                        <div class="barra-columna" style="height: ${altura}px;"></div>
+                        <div class="barra-mes">${meses[index]}</div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('graficaVentas').innerHTML = html;
+        }
+
+        // Mostrar notificación
+        function mostrarNotificacion(mensaje, tipo = 'success') {
+            const alerta = document.createElement('div');
+            alerta.className = `alerta alerta-${tipo}`;
+            alerta.textContent = mensaje;
+            alerta.style.position = 'fixed';
+            alerta.style.top = '20px';
+            alerta.style.right = '20px';
+            alerta.style.zIndex = '2000';
+            alerta.style.maxWidth = '400px';
+            alerta.style.whiteSpace = 'pre-line';
+            
+            document.body.appendChild(alerta);
+            
+            setTimeout(() => alerta.remove(), 3000);
+        }
+
+        // Permitir Enter en el modal
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('inputPassword').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    verificarPassword();
+                }
+            });
+        });
+
+        // Formatear tarjeta mientras se escribe
+        document.getElementById('numeroTarjeta').addEventListener('input', (e) => {
+            let valor = e.target.value.replace(/\s/g, '');
+            let formateado = '';
+            for (let i = 0; i < valor.length; i++) {
+                if (i > 0 && i % 4 === 0) formateado += ' ';
+                formateado += valor[i];
+            }
+            e.target.value = formateado;
+        });
+
+        // Formatear fecha MM/AA
+        document.getElementById('fechaExpiracion').addEventListener('input', (e) => {
+            let valor = e.target.value.replace(/\D/g, '');
+            if (valor.length >= 2) {
+                valor = valor.slice(0, 2) + '/' + valor.slice(2, 4);
+            }
+            e.target.value = valor;
+        });
+    </script>
+</body>
+</html>
